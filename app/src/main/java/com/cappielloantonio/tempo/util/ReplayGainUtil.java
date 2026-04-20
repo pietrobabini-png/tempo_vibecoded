@@ -172,7 +172,11 @@ public class ReplayGainUtil {
                 pastMediaItem.mediaMetadata.albumTitle.toString().equals(currentMediaItem.mediaMetadata.albumTitle.toString());
     }
 
+    // Preamp +7 dB: aligns foobar2000 ReplayGain reference (-18 LUFS) to Spotify Loud target (-11 LUFS)
+    private static final float PREAMP_DB = 7f;
+
     private static void setReplayGain(ExoPlayer player, float gain) {
-        player.setVolume((float) Math.pow(10f, gain / 20f));
+        float volume = (float) Math.pow(10f, (gain + PREAMP_DB) / 20f);
+        player.setVolume(Math.min(volume, 1.0f));
     }
 }
