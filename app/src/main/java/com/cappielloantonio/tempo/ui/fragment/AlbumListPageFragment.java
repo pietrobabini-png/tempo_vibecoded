@@ -22,7 +22,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.util.UnstableApi;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.cappielloantonio.tempo.R;
 import com.cappielloantonio.tempo.databinding.FragmentAlbumListPageBinding;
@@ -120,7 +120,7 @@ public class AlbumListPageFragment extends Fragment implements ClickCallback {
 
     @SuppressLint("ClickableViewAccessibility")
     private void initAlbumListView() {
-        bind.albumListRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        bind.albumListRecyclerView.setLayoutManager(new GridLayoutManager(requireContext(), requireContext().getResources().getInteger(R.integer.grid_span_count)));
         bind.albumListRecyclerView.setHasFixedSize(true);
 
         albumHorizontalAdapter = new AlbumHorizontalAdapter(

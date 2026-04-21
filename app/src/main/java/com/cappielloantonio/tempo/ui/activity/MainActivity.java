@@ -36,6 +36,7 @@ import com.cappielloantonio.tempo.util.Preferences;
 import com.cappielloantonio.tempo.viewmodel.MainViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.navigationrail.NavigationRailView;
 import com.google.android.material.color.DynamicColors;
 import com.google.common.util.concurrent.MoreExecutors;
 
@@ -52,6 +53,7 @@ public class MainActivity extends BaseActivity {
     private FragmentManager fragmentManager;
     private NavHostFragment navHostFragment;
     private BottomNavigationView bottomNavigationView;
+    private NavigationRailView navigationRailView;
     public NavController navController;
     private BottomSheetBehavior bottomSheetBehavior;
 
@@ -205,19 +207,20 @@ public class MainActivity extends BaseActivity {
     }
 
     private void animateBottomNavigation(float slideOffset, int navigationHeight) {
-        if (slideOffset < 0) return;
+        if (slideOffset < 0 || bottomNavigationView == null) return;
 
         if (navigationHeight == 0) {
-            navigationHeight = bind.bottomNavigation.getHeight();
+            navigationHeight = bottomNavigationView.getHeight();
         }
 
         float slideY = navigationHeight - navigationHeight * (1 - slideOffset);
 
-        bind.bottomNavigation.setTranslationY(slideY);
+        bottomNavigationView.setTranslationY(slideY);
     }
 
     private void initNavigation() {
         bottomNavigationView = findViewById(R.id.bottom_navigation);
+        navigationRailView = findViewById(R.id.navigation_rail);
         navHostFragment = (NavHostFragment) fragmentManager.findFragmentById(R.id.nav_host_fragment);
         navController = Objects.requireNonNull(navHostFragment).getNavController();
 
@@ -235,15 +238,17 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        NavigationUI.setupWithNavController(bottomNavigationView, navController);
+        if (bottomNavigationView != null) {
+            NavigationUI.setupWithNavController(bottomNavigationView, navController);
+        } else if (navigationRailView != null) {
+            NavigationUI.setupWithNavController(navigationRailView, navController);
+        }
     }
 
     public void setBottomNavigationBarVisibility(boolean visibility) {
-        if (visibility) {
-            bottomNavigationView.setVisibility(View.VISIBLE);
-        } else {
-            bottomNavigationView.setVisibility(View.GONE);
-        }
+        int vis = visibility ? View.VISIBLE : View.GONE;
+        if (bottomNavigationView != null) bottomNavigationView.setVisibility(vis);
+        if (navigationRailView != null) navigationRailView.setVisibility(vis);
     }
 
     private void initService() {
@@ -280,7 +285,8 @@ public class MainActivity extends BaseActivity {
     }
 
     private void goToHome() {
-        bottomNavigationView.setVisibility(View.VISIBLE);
+        if (bottomNavigationView != null) bottomNavigationView.setVisibility(View.VISIBLE);
+        if (navigationRailView != null) navigationRailView.setVisibility(View.VISIBLE);
 
         if (Objects.requireNonNull(navController.getCurrentDestination()).getId() == R.id.landingFragment) {
             navController.navigate(R.id.action_landingFragment_to_homeFragment);

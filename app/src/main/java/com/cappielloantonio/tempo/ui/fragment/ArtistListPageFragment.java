@@ -21,7 +21,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.util.UnstableApi;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.cappielloantonio.tempo.R;
 import com.cappielloantonio.tempo.databinding.FragmentArtistListPageBinding;
@@ -105,7 +105,7 @@ public class ArtistListPageFragment extends Fragment implements ClickCallback {
 
     @SuppressLint("ClickableViewAccessibility")
     private void initArtistListView() {
-        bind.artistListRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        bind.artistListRecyclerView.setLayoutManager(new GridLayoutManager(requireContext(), requireContext().getResources().getInteger(R.integer.grid_span_count)));
         bind.artistListRecyclerView.setHasFixedSize(true);
 
         artistHorizontalAdapter = new ArtistHorizontalAdapter(this);
